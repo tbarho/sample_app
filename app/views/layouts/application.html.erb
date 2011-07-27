@@ -1,14 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>SampleApp</title>
-  <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag :defaults %>
-  <%= csrf_meta_tag %>
-</head>
-<body>
-
-<%= yield %>
-
-</body>
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Ruby on Rails Tutorial Sample App | <%= @title %></title>
+    <%= csrf_meta_tag %>
+    <!--[if lte IE 8]>
+          <script src="http://js.cwhcode.com/html5/"></script>
+      <![endif]-->
+  </head>
+  <body>
+    <%= yield %>
+  </body>
 </html>
