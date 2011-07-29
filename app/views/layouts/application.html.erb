@@ -1,13 +1,17 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Ruby on Rails Tutorial Sample App | <%= @title %></title>
+    <title><%= title %></title>
     <%= csrf_meta_tag %>
-    <!--[if lte IE 8]>
-          <script src="http://js.cwhcode.com/html5/"></script>
-      <![endif]-->
+    <%= render 'layouts/stylesheets' %>
   </head>
   <body>
-    <%= yield %>
+    <div class="container">
+      <%= render 'layouts/header' %>
+      <section class="round">
+        <%= yield %>
+      </section>
+      <%= render 'layouts/footer' %>
+    </div>
   </body>
 </html>
