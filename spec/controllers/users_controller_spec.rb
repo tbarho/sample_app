@@ -48,6 +48,22 @@ describe UsersController do
         response.should have_selector("a", :href => "/users?page=2", :content => "2")
         response.should have_selector("a", :href => "/users?page=2", :content => "Next")
       end
+      
+      it "should not show delete links" do
+        get :index
+        response.should_not have_selector("a", :content => "delete")
+      end
+    end
+
+    describe "for admin users" do
+      before(:each) do
+        admin = test_sign_in(Factory(:user, :email => "admin@exmaple.com", :admin => true))
+      end
+
+      it "should show delete links" do
+        get :index
+        response.should have_selector("a", :content => "delete")
+      end
     end
   end
 
@@ -80,6 +96,14 @@ describe UsersController do
     it "should have a profile image" do
       get :show, :id => @user
       response.should have_selector("h1>img", :class => "gravatar")
+    end
+
+    it "should show the users microposts" do
+      mp1 = Factory(:micropost, :user => @user, :content => "Foo Bar")
+      mp2 = Factory(:micropost, :user => @user, :content => "Baz quux")
+      get :show, :id => @user
+      response.should have_selector("span.content", :content => mp1.content)
+      response.should have_selector("span.content", :content => mp2.content)
     end
   end
 
@@ -302,8 +326,8 @@ describe UsersController do
 
     describe "as admin user" do
       before(:each) do
-        admin = Factory(:user, :email => "admin@example.com", :admin => true)
-        test_sign_in(admin)
+        @admin = Factory(:user, :email => "admin@example.com", :admin => true)
+        test_sign_in(@admin)
       end
 
       it "should destroy the user" do
@@ -315,6 +339,17 @@ describe UsersController do
       it "should redirect to the users page" do
         delete :destroy, :id => @user
         response.should redirect_to(users_path)
+      end
+
+      it "should not be able to destroy itself" do
+        lambda do
+          delete :destroy, :id => @admin
+        end.should_not change(User, :count)
+      end
+      
+      it "should have flash message if admin tried to delete self" do
+        delete :destroy, :id => @admin
+        flash[:error].should =~ /yourself/i
       end
     end
   end
